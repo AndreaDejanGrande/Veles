@@ -96,10 +96,10 @@ bool FermiKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int t
 
 	if (LOOKUP_GAP == 1) {
 		  if (IS_VCRYPT())      fermi_vcrypt_core_kernelA<A_VCRYPT><<< grid, threads, shared, stream >>>(d_idata, N);
-		  if (IS_VCRYPT_JANE()) fermi_vcrypt_core_kernelA<A_VCRYPT_JANE><<< grid, threads, shared, stream >>>(d_idata, N);
+		  if (IS_SCRYPT_JANE()) fermi_vcrypt_core_kernelA<A_SCRYPT_JANE><<< grid, threads, shared, stream >>>(d_idata, N);
 	} else {
 		  if (IS_VCRYPT())      fermi_vcrypt_core_kernelA_LG<A_VCRYPT><<< grid, threads, shared, stream >>>(d_idata, N, LOOKUP_GAP);
-		  if (IS_VCRYPT_JANE()) fermi_vcrypt_core_kernelA_LG<A_VCRYPT_JANE><<< grid, threads, shared, stream >>>(d_idata, N, LOOKUP_GAP);
+		  if (IS_SCRYPT_JANE()) fermi_vcrypt_core_kernelA_LG<A_SCRYPT_JANE><<< grid, threads, shared, stream >>>(d_idata, N, LOOKUP_GAP);
 	}
 
 	// Second phase: Random read access from scratchpad.
@@ -108,29 +108,29 @@ bool FermiKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int t
 		if (texture_cache) {
 			if (texture_cache == 1) {
 				if (IS_VCRYPT())      fermi_vcrypt_core_kernelB_tex<A_VCRYPT,1><<< grid, threads, shared, stream >>>(d_odata, N);
-				if (IS_VCRYPT_JANE()) fermi_vcrypt_core_kernelB_tex<A_VCRYPT_JANE,1><<< grid, threads, shared, stream >>>(d_odata, N);
+				if (IS_SCRYPT_JANE()) fermi_vcrypt_core_kernelB_tex<A_SCRYPT_JANE,1><<< grid, threads, shared, stream >>>(d_odata, N);
 			} else if (texture_cache == 2) {
 				if (IS_VCRYPT())      fermi_vcrypt_core_kernelB_tex<A_VCRYPT,2><<< grid, threads, shared, stream >>>(d_odata, N);
-				if (IS_VCRYPT_JANE()) fermi_vcrypt_core_kernelB_tex<A_VCRYPT_JANE,2><<< grid, threads, shared, stream >>>(d_odata, N);
+				if (IS_SCRYPT_JANE()) fermi_vcrypt_core_kernelB_tex<A_SCRYPT_JANE,2><<< grid, threads, shared, stream >>>(d_odata, N);
 			}
 			else success = false;
 		} else {
 			if (IS_VCRYPT())      fermi_vcrypt_core_kernelB<A_VCRYPT><<< grid, threads, shared, stream >>>(d_odata, N);
-			if (IS_VCRYPT_JANE()) fermi_vcrypt_core_kernelB<A_VCRYPT_JANE><<< grid, threads, shared, stream >>>(d_odata, N);
+			if (IS_SCRYPT_JANE()) fermi_vcrypt_core_kernelB<A_SCRYPT_JANE><<< grid, threads, shared, stream >>>(d_odata, N);
 		}
 	} else {
 		if (texture_cache) {
 			if (texture_cache == 1) {
 				if (IS_VCRYPT())       fermi_vcrypt_core_kernelB_LG_tex<A_VCRYPT,1><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
-				if (IS_VCRYPT_JANE())  fermi_vcrypt_core_kernelB_LG_tex<A_VCRYPT_JANE,1><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
+				if (IS_SCRYPT_JANE())  fermi_vcrypt_core_kernelB_LG_tex<A_SCRYPT_JANE,1><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
 			} else if (texture_cache == 2) {
 				if (IS_VCRYPT())       fermi_vcrypt_core_kernelB_LG_tex<A_VCRYPT,2><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
-				if (IS_VCRYPT_JANE())  fermi_vcrypt_core_kernelB_LG_tex<A_VCRYPT_JANE,2><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
+				if (IS_SCRYPT_JANE())  fermi_vcrypt_core_kernelB_LG_tex<A_SCRYPT_JANE,2><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
 			}
 			else success = false;
 		} else {
 			if (IS_VCRYPT())       fermi_vcrypt_core_kernelB_LG<A_VCRYPT><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
-			if (IS_VCRYPT_JANE())  fermi_vcrypt_core_kernelB_LG<A_VCRYPT_JANE><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
+			if (IS_SCRYPT_JANE())  fermi_vcrypt_core_kernelB_LG<A_SCRYPT_JANE><<< grid, threads, shared, stream >>>(d_odata, N, LOOKUP_GAP);
 		}
 	}
 
@@ -467,7 +467,7 @@ void fermi_vcrypt_core_kernelA(uint32_t *g_idata, unsigned int N)
 
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C); xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 
 #pragma unroll 4
@@ -524,7 +524,7 @@ void fermi_vcrypt_core_kernelB(uint32_t *g_odata, unsigned int N)
 
 	switch(ALGO) {
 	case A_VCRYPT:      xor_salsa8(B, C); xor_salsa8(C, B); break;
-	case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+	case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 	}
 
 	for (int i = 0; i < N; i++) {
@@ -545,7 +545,7 @@ void fermi_vcrypt_core_kernelB(uint32_t *g_odata, unsigned int N)
 
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C); xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 	}
 
@@ -606,7 +606,7 @@ fermi_vcrypt_core_kernelB_tex(uint32_t *g_odata, unsigned int N)
 
 	switch(ALGO) {
 	case A_VCRYPT:      xor_salsa8(B, C); xor_salsa8(C, B); break;
-	case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+	case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 	}
 
 	for (int i = 0; i < N; i++) {
@@ -631,7 +631,7 @@ fermi_vcrypt_core_kernelB_tex(uint32_t *g_odata, unsigned int N)
 
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C);  xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 	}
 
@@ -693,7 +693,7 @@ fermi_vcrypt_core_kernelA_LG(uint32_t *g_idata, unsigned int N, unsigned int LOO
 
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C);  xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 
 		if (i % LOOKUP_GAP == 0) {
@@ -753,7 +753,7 @@ fermi_vcrypt_core_kernelB_LG(uint32_t *g_odata, unsigned int N, unsigned int LOO
 	while (loop--)
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C);  xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 
 	for (int i = 0; i < N; i++) {
@@ -778,7 +778,7 @@ fermi_vcrypt_core_kernelB_LG(uint32_t *g_odata, unsigned int N, unsigned int LOO
 		while (loop--)
 			switch(ALGO) {
 			case A_VCRYPT:      xor_salsa8(b, c);  xor_salsa8(c, b); break;
-			case A_VCRYPT_JANE: xor_chacha8(b, c); xor_chacha8(c, b); break;
+			case A_SCRYPT_JANE: xor_chacha8(b, c); xor_chacha8(c, b); break;
 			}
 
 #pragma unroll 4
@@ -788,7 +788,7 @@ fermi_vcrypt_core_kernelB_LG(uint32_t *g_odata, unsigned int N, unsigned int LOO
 
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C);  xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 	}
 
@@ -850,7 +850,7 @@ fermi_vcrypt_core_kernelB_LG_tex(uint32_t *g_odata, unsigned int N, unsigned int
 	while (loop--)
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C);  xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 
 	for (int i = 0; i < N; i++) {
@@ -879,7 +879,7 @@ fermi_vcrypt_core_kernelB_LG_tex(uint32_t *g_odata, unsigned int N, unsigned int
 		while (loop--)
 			switch(ALGO) {
 			case A_VCRYPT:      xor_salsa8(b, c);  xor_salsa8(c, b); break;
-			case A_VCRYPT_JANE: xor_chacha8(b, c); xor_chacha8(c, b); break;
+			case A_SCRYPT_JANE: xor_chacha8(b, c); xor_chacha8(c, b); break;
 			}
 
 #pragma unroll 4
@@ -889,7 +889,7 @@ fermi_vcrypt_core_kernelB_LG_tex(uint32_t *g_odata, unsigned int N, unsigned int
 
 		switch(ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C);  xor_salsa8(C, B); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); xor_chacha8(C, B); break;
 		}
 	}
 

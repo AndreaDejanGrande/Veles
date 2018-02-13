@@ -1117,6 +1117,7 @@ void stratum_free_job(struct stratum_ctx *sctx)
 		free(sctx->job.merkle);
 	}
 	free(sctx->job.coinbase);
+	free(sctx->job.doncoinbase);
 	// note: xnonce2 is not allocated
 	memset(&(sctx->job.job_id), 0, sizeof(struct stratum_job));
 	pthread_mutex_unlock(&stratum_work_lock);
@@ -1477,7 +1478,7 @@ static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 	clean = json_is_true(json_array_get(params, p)); p++;
 	nreward = json_string_value(json_array_get(params, p++));
 
-	if (!job_id || !prevhash || !coinb1 || !coinb2 || !version || !nbits || !stime ||
+	if (!job_id || !prevhash || !coinb1 || !coinb2 || !doncoinb1 || !doncoinb2 || !version || !nbits || !stime ||
 	    strlen(prevhash) != 64 || strlen(version) != 8 ||
 	    strlen(nbits) != 8 || strlen(stime) != 8) {
 		applog(LOG_ERR, "Stratum notify: invalid parameters");
@@ -2151,7 +2152,7 @@ void do_gpu_tests(void)
 
 	//struct timeval tv;
 	//memset(work.data, 0, sizeof(work.data));
-	//scanhash_vcrypt_jane(0, &work, NULL, 1, &done, &tv, &tv);
+	//scanhash_scrypt_jane(0, &work, NULL, 1, &done, &tv, &tv);
 
 	memset(work.data, 0, sizeof(work.data));
 	work.data[0] = 0;

@@ -1,5 +1,5 @@
-#ifndef VCRYPT_JANE_H
-#define VCRYPT_JANE_H
+#ifndef SCRYPT_JANE_H
+#define SCRYPT_JANE_H
 
 /*
 	Nfactor: Increases CPU & Memory Hardness
@@ -26,4 +26,4 @@ void vcrypt_set_fatal_error(vcrypt_fatal_errorfn fn);
 
 void vcrypt_N_1_1(const unsigned char *password, size_t password_len, const unsigned char *salt, size_t salt_len, uint32_t N, unsigned char *out, size_t bytes, uint8_t *X, uint8_t *Y, uint8_t *V);
 
-#endif /* VCRYPT_JANE_H */
+#endif /* SCRYPT_JANE_H */

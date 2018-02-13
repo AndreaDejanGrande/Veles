@@ -276,7 +276,7 @@ void load_key(const uint32_t *B, uint4 &b, uint4 &bx)
 {
 		switch(ALGO) {
 		case A_VCRYPT:      load_key_salsa(B, b, bx); break;
-		case A_VCRYPT_JANE: load_key_chacha(B, b, bx); break;
+		case A_SCRYPT_JANE: load_key_chacha(B, b, bx); break;
 		}
 }
 
@@ -285,7 +285,7 @@ void store_key(uint32_t *B, uint4 &b, uint4 &bx)
 {
 		switch(ALGO) {
 		case A_VCRYPT:      store_key_salsa(B, b, bx); break;
-		case A_VCRYPT_JANE: store_key_chacha(B, b, bx); break;
+		case A_SCRYPT_JANE: store_key_chacha(B, b, bx); break;
 		}
 }
 
@@ -471,7 +471,7 @@ void block_mixer(uint4 &b, uint4 &bx, const int x1, const int x2, const int x3)
 {
 	switch(ALGO) {
 	case A_VCRYPT:      salsa_xor_core(b, bx, x1, x2, x3);  break;
-	case A_VCRYPT_JANE: chacha_xor_core(b, bx, x1, x2, x3); break;
+	case A_SCRYPT_JANE: chacha_xor_core(b, bx, x1, x2, x3); break;
 	}
 }
 
@@ -744,10 +744,10 @@ bool KeplerKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int 
 	{
 		if (LOOKUP_GAP == 1) {
 			if (IS_VCRYPT())      kepler_vcrypt_core_kernelA<A_VCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
-			if (IS_VCRYPT_JANE()) kepler_vcrypt_core_kernelA<A_VCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
+			if (IS_SCRYPT_JANE()) kepler_vcrypt_core_kernelA<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
 		} else {
 			if (IS_VCRYPT())      kepler_vcrypt_core_kernelA_LG<A_VCRYPT,    ANDERSEN> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
-			if (IS_VCRYPT_JANE()) kepler_vcrypt_core_kernelA_LG<A_VCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+			if (IS_SCRYPT_JANE()) kepler_vcrypt_core_kernelA_LG<A_SCRYPT_JANE, SIMPLE> <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
 		}
 		pos += batch;
 	} while (pos < N);
@@ -761,26 +761,26 @@ bool KeplerKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int 
 
 			if (texture_cache == 0) {
 				if (IS_VCRYPT())      kepler_vcrypt_core_kernelB<A_VCRYPT     ,ANDERSEN, 0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
-				if (IS_VCRYPT_JANE()) kepler_vcrypt_core_kernelB<A_VCRYPT_JANE,SIMPLE,   0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+				if (IS_SCRYPT_JANE()) kepler_vcrypt_core_kernelB<A_SCRYPT_JANE,SIMPLE,   0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 			} else if (texture_cache == 1) {
 				if (IS_VCRYPT())      kepler_vcrypt_core_kernelB<A_VCRYPT     ,ANDERSEN,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
-				if (IS_VCRYPT_JANE()) kepler_vcrypt_core_kernelB<A_VCRYPT_JANE,SIMPLE,  1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+				if (IS_SCRYPT_JANE()) kepler_vcrypt_core_kernelB<A_SCRYPT_JANE,SIMPLE,  1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 			} else if (texture_cache == 2) {
 				if (IS_VCRYPT())      kepler_vcrypt_core_kernelB<A_VCRYPT     ,ANDERSEN,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
-				if (IS_VCRYPT_JANE()) kepler_vcrypt_core_kernelB<A_VCRYPT_JANE,SIMPLE,  2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+				if (IS_SCRYPT_JANE()) kepler_vcrypt_core_kernelB<A_SCRYPT_JANE,SIMPLE,  2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 			}
 
 		} else {
 
 			if (texture_cache == 0) {
 				if (IS_VCRYPT())       kepler_vcrypt_core_kernelB_LG<A_VCRYPT     ,ANDERSEN,0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
-				if (IS_VCRYPT_JANE())  kepler_vcrypt_core_kernelB_LG<A_VCRYPT_JANE,SIMPLE,  0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+				if (IS_SCRYPT_JANE())  kepler_vcrypt_core_kernelB_LG<A_SCRYPT_JANE,SIMPLE,  0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 			} else if (texture_cache == 1) {
 				if (IS_VCRYPT())       kepler_vcrypt_core_kernelB_LG<A_VCRYPT     ,ANDERSEN,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
-				if (IS_VCRYPT_JANE())  kepler_vcrypt_core_kernelB_LG<A_VCRYPT_JANE,SIMPLE,  1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+				if (IS_SCRYPT_JANE())  kepler_vcrypt_core_kernelB_LG<A_SCRYPT_JANE,SIMPLE,  1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 			} else if (texture_cache == 2) {
 				if (IS_VCRYPT())       kepler_vcrypt_core_kernelB_LG<A_VCRYPT     ,ANDERSEN,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
-				if (IS_VCRYPT_JANE())  kepler_vcrypt_core_kernelB_LG<A_VCRYPT_JANE,SIMPLE,  2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+				if (IS_SCRYPT_JANE())  kepler_vcrypt_core_kernelB_LG<A_SCRYPT_JANE,SIMPLE,  2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 			}
 		}
 

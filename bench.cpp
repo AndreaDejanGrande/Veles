@@ -105,7 +105,7 @@ void algo_free_all(int thr_id)
 	free_x17(thr_id);
 	free_zr5(thr_id);
 	free_vcrypt(thr_id);
-	free_vcrypt_jane(thr_id);
+	free_scrypt_jane(thr_id);
 	free_timetravel(thr_id);
 	free_tribus(thr_id);
 	free_bitcore(thr_id);
@@ -148,7 +148,7 @@ bool bench_algo_switch_next(int thr_id)
 	}
 	// and unwanted ones...
 	if (algo == ALGO_VCRYPT) algo++;
-	if (algo == ALGO_VCRYPT_JANE) algo++;
+	if (algo == ALGO_SCRYPT_JANE) algo++;
 
 	// free current algo memory and track mem usage
 	mused = cuda_available_memory(thr_id);

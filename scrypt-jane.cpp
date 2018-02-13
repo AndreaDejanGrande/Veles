@@ -432,7 +432,7 @@ unsigned char GetNfactor(unsigned int nTimestamp)
 static bool init[MAX_GPUS] = { 0 };
 
 // cleanup
-void free_vcrypt_jane(int thr_id)
+void free_scrypt_jane(int thr_id)
 {
 	int dev_id = device_map[thr_id];
 
@@ -450,7 +450,7 @@ void free_vcrypt_jane(int thr_id)
 					 | (((x) >> 8) & 0x0000ff00u) | (((x) >> 24) & 0x000000ffu))
 static int s_Nfactor = 0;
 
-int scanhash_vcrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done,
+int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done,
 	unsigned char *scratchbuf, struct timeval *tv_start, struct timeval *tv_end)
 {
 	uint32_t *pdata = work->data;
@@ -661,7 +661,7 @@ int scanhash_vcrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 }
 
 
-static void vcrypt_jane_hash_1_1(const uchar *password, size_t password_len, const uchar*salt, size_t salt_len, uint32_t N,
+static void scrypt_jane_hash_1_1(const uchar *password, size_t password_len, const uchar*salt, size_t salt_len, uint32_t N,
 	uchar *out, uint32_t bytes, uint8_t *X, uint8_t *Y, uint8_t *V)
 {
 	uint32_t chunk_bytes, i;
@@ -706,7 +706,7 @@ void vcryptjane_hash(void* output, const void* input)
 	Y = YX.ptr;
 	X = Y + chunk_bytes;
 
-	vcrypt_jane_hash_1_1((uchar*)input, 80, (uchar*)input, 80, (uint32_t) Nsize, (uchar*)output, 32, X, Y, V.ptr);
+	scrypt_jane_hash_1_1((uchar*)input, 80, (uchar*)input, 80, (uint32_t) Nsize, (uchar*)output, 32, X, Y, V.ptr);
 
 	vcrypt_free(&V);
 	vcrypt_free(&YX);

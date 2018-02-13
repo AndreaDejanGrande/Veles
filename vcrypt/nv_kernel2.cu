@@ -58,7 +58,7 @@ bool NV2Kernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int thr
 {
 	bool success = true;
 	bool vcrypt = IS_VCRYPT();
-	bool chacha = IS_VCRYPT_JANE();
+	bool chacha = IS_SCRYPT_JANE();
 
 	// make some constants available to kernel, update only initially and when changing
 	static uint32_t prev_N[MAX_GPUS] = { 0 };
@@ -83,10 +83,10 @@ bool NV2Kernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int thr
 	{
 		if (LOOKUP_GAP == 1) {
 			if (vcrypt) nv2_vcrypt_core_kernelA<A_VCRYPT>     <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
-			if (chacha) nv2_vcrypt_core_kernelA<A_VCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
+			if (chacha) nv2_vcrypt_core_kernelA<A_SCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
 		} else {
 			if (vcrypt) nv2_vcrypt_core_kernelA_LG<A_VCRYPT>     <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
-			if (chacha) nv2_vcrypt_core_kernelA_LG<A_VCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+			if (chacha) nv2_vcrypt_core_kernelA_LG<A_SCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
 		}
 		pos += batch;
 	} while (pos < N);
@@ -97,10 +97,10 @@ bool NV2Kernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int thr
 	{
 		if (LOOKUP_GAP == 1) {
 			if (vcrypt) nv2_vcrypt_core_kernelB<A_VCRYPT     > <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
-			if (chacha) nv2_vcrypt_core_kernelB<A_VCRYPT_JANE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+			if (chacha) nv2_vcrypt_core_kernelB<A_SCRYPT_JANE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 		} else {
 			if (vcrypt) nv2_vcrypt_core_kernelB_LG<A_VCRYPT     > <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
-			if (chacha) nv2_vcrypt_core_kernelB_LG<A_VCRYPT_JANE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+			if (chacha) nv2_vcrypt_core_kernelB_LG<A_SCRYPT_JANE> <<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 		}
 
 		pos += batch;
@@ -533,7 +533,7 @@ template <int ALGO> static __device__ void block_mixer(uint4 *B, uint4 *C)
   switch (ALGO)
   {
 	case A_VCRYPT:      xor_salsa8(B, C); break;
-	case A_VCRYPT_JANE: xor_chacha8(B, C); break;
+	case A_SCRYPT_JANE: xor_chacha8(B, C); break;
   }
 }
 

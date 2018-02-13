@@ -900,7 +900,7 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 
 	/* discard if a newer block was received */
 	stale_work = work->height && work->height < g_work.height;
-	if (have_stratum && !stale_work && !opt_submit_stale && opt_algo != ALGO_ZR5 && opt_algo != ALGO_VCRYPT_JANE) {
+	if (have_stratum && !stale_work && !opt_submit_stale && opt_algo != ALGO_ZR5 && opt_algo != ALGO_SCRYPT_JANE) {
 		pthread_mutex_lock(&g_work_lock);
 		if (strlen(work->job_id + 8))
 			stale_work = strncmp(work->job_id + 8, g_work.job_id + 8, sizeof(g_work.job_id) - 8);
@@ -1542,6 +1542,7 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		be32dec(sctx->job.ntime) & 0xfffffff, sctx->job.job_id);
 	work->xnonce2_len = sctx->xnonce2_size;
 	memcpy(work->xnonce2, sctx->job.xnonce2, sctx->xnonce2_size);
+	memcpy(work->donxnonce2, sctx->job.donxnonce2, sctx->xnonce2_size);
 
 	// also store the block number
 	work->height = sctx->job.height;
@@ -1591,6 +1592,7 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 	
 	/* Increment extranonce2 */
 	for (i = 0; i < (int)sctx->xnonce2_size && !++sctx->job.xnonce2[i]; i++);
+	for (i = 0; i < (int)sctx->xnonce2_size && !++sctx->job.donxnonce2[i]; i++);
 
 	/* Assemble block header */
 	memset(work->data, 0, sizeof(work->data));
@@ -1699,7 +1701,7 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		case ALGO_JHA:
 		case ALGO_NEOSCRYPT:
 		case ALGO_VCRYPT:
-		case ALGO_VCRYPT_JANE:
+		case ALGO_SCRYPT_JANE:
 			work_set_target(work, sctx->job.diff / (65536.0 * opt_difficulty));
 			break;
 		case ALGO_DMD_GR:
@@ -2270,7 +2272,7 @@ static void *miner_thread(void *userdata)
 				break;
 			case ALGO_CRYPTOLIGHT:
 			case ALGO_CRYPTONIGHT:
-			case ALGO_VCRYPT_JANE:
+			case ALGO_SCRYPT_JANE:
 				minmax = 0x1000;
 				break;
 			}
@@ -2438,8 +2440,8 @@ static void *miner_thread(void *userdata)
 			rc = scanhash_vcrypt(thr_id, &work, max_nonce, &hashes_done,
 				NULL, &tv_start, &tv_end);
 			break;
-		case ALGO_VCRYPT_JANE:
-			rc = scanhash_vcrypt_jane(thr_id, &work, max_nonce, &hashes_done,
+		case ALGO_SCRYPT_JANE:
+			rc = scanhash_scrypt_jane(thr_id, &work, max_nonce, &hashes_done,
 				NULL, &tv_start, &tv_end);
 			break;
 		case ALGO_SKEIN:
@@ -2534,7 +2536,7 @@ static void *miner_thread(void *userdata)
 			// algos to migrate to replace pdata[21] by work.nonces[]
 			case ALGO_HEAVY:
 			case ALGO_VCRYPT:
-			case ALGO_VCRYPT_JANE:
+			case ALGO_SCRYPT_JANE:
 			//case ALGO_WHIRLPOOLX:
 				work.nonces[0] = nonceptr[0];
 				work.nonces[1] = nonceptr[2];
@@ -3052,7 +3054,7 @@ static void show_usage_and_exit(int status)
 	else
 		printf(usage);
 
-	if (opt_algo == ALGO_VCRYPT || opt_algo == ALGO_VCRYPT_JANE) {
+	if (opt_algo == ALGO_VCRYPT || opt_algo == ALGO_SCRYPT_JANE) {
 		printf(vcrypt_usage);
 	}
 	else if (opt_algo == ALGO_CRYPTONIGHT || opt_algo == ALGO_CRYPTOLIGHT) {
@@ -3086,7 +3088,7 @@ void parse_arg(int key, char *arg)
 
 		if (p) {
 			opt_nfactor = atoi(p + 1);
-			if (opt_algo == ALGO_VCRYPT_JANE) {
+			if (opt_algo == ALGO_SCRYPT_JANE) {
 				free(jane_params);
 				jane_params = strdup(p+1);
 			}
@@ -3094,7 +3096,7 @@ void parse_arg(int key, char *arg)
 		if (!opt_nfactor) {
 			switch (opt_algo) {
 			case ALGO_VCRYPT:      opt_nfactor = 9;  break;
-			case ALGO_VCRYPT_JANE: opt_nfactor = 14; break;
+			case ALGO_SCRYPT_JANE: opt_nfactor = 14; break;
 			}
 		}
 		break;

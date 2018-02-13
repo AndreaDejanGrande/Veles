@@ -330,7 +330,7 @@ extern int scanhash_zr5(int thr_id, struct work *work, uint32_t max_nonce, unsig
 
 extern int scanhash_vcrypt(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done,
 	unsigned char *scratchbuf, struct timeval *tv_start, struct timeval *tv_end);
-extern int scanhash_vcrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done,
+extern int scanhash_scrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done,
 	unsigned char *scratchbuf, struct timeval *tv_start, struct timeval *tv_end);
 
 /* free device allocated memory per algo */
@@ -393,7 +393,7 @@ extern void free_x17(int thr_id);
 extern void free_zr5(int thr_id);
 //extern void free_sha256d(int thr_id);
 extern void free_vcrypt(int thr_id);
-extern void free_vcrypt_jane(int thr_id);
+extern void free_scrypt_jane(int thr_id);
 
 /* api related */
 void *api_thread(void *userdata);
@@ -652,8 +652,8 @@ struct stratum_job {
 	char *job_id;
 	unsigned char prevhash[32];
 	size_t coinbase_size;
-	size_t doncoinbase_size;
 	unsigned char *coinbase;
+	size_t doncoinbase_size;
 	unsigned char *doncoinbase;
 	unsigned char *xnonce2;
 	unsigned char *donxnonce2;
@@ -715,6 +715,7 @@ struct work {
 	char job_id[128];
 	size_t xnonce2_len;
 	uchar xnonce2[32];
+	uchar donxnonce2[32];
 
 	union {
 		uint32_t u32[2];

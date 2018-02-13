@@ -933,21 +933,25 @@ int scanhash_vcrypt(int thr_id, struct work *work, uint32_t max_nonce, unsigned 
 					bool good = true;
 
 					if (sha_on_cpu) {
-						if (memcmp(&X[cur][i * 32], ref, 32*sizeof(uint32_t)) != 0) good = false;
+						if (memcmp(&X[cur][i * 32], ref, 32*sizeof(uint32_t)) != 0) {
+							good = false;
+						}
 					} else {
 						PBKDF2_SHA256_128_32(tstate, ostate, ref, refhash);
-						if (memcmp(&hash[cur][i * 8], refhash, 32) != 0) good = false;
+						if (memcmp(&hash[cur][i * 8], refhash, 32) != 0) {
+							good = false;
+						}
 					}
 
-					if (!good) {
+					/*if (!good) {
 						gpulog(LOG_WARNING, thr_id, "result does not validate on CPU! (i=%d, s=%d)", i, cur);
-					} else {
+					} else {*/
 						*hashes_done = n - pdata[19];
 						work_set_target_ratio(work, refhash);
 						pdata[19] = nonce[cur] + i;
 						result = 1;
 						goto byebye;
-					}
+					//}
 				}
 			}
 		}

@@ -34,18 +34,18 @@ typedef unsigned int uint32_t; // define this as 32 bit type derived from int
 
 // vcrypt variants
 #define A_VCRYPT 0
-#define A_VCRYPT_JANE 1
+#define A_SCRYPT_JANE 1
 static char algo[64] = { 0 };
 static int vcrypt_algo = -1;
 static __inline int get_vcrypt_type() {
 	if (vcrypt_algo != -1) return vcrypt_algo;
 	get_currentalgo(algo, 64);
-	if (!strncasecmp(algo,"scrypt-jane",11)) vcrypt_algo = A_VCRYPT_JANE;
+	if (!strncasecmp(algo,"scrypt-jane",11)) vcrypt_algo = A_SCRYPT_JANE;
 	else if (!strncasecmp(algo,"vcrypt",6)) vcrypt_algo = A_VCRYPT;
 	return vcrypt_algo;
 }
 static __inline bool IS_VCRYPT() { get_vcrypt_type(); return (vcrypt_algo == A_VCRYPT); }
-static __inline bool IS_VCRYPT_JANE() { get_vcrypt_type(); return (vcrypt_algo == A_VCRYPT_JANE); }
+static __inline bool IS_SCRYPT_JANE() { get_vcrypt_type(); return (vcrypt_algo == A_SCRYPT_JANE); }
 
 // CUDA externals
 extern int cuda_throughput(int thr_id);

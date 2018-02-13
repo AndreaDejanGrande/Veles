@@ -56,7 +56,7 @@ KernelInterface *Best_Kernel_Heuristics(cudaDeviceProp *props)
 	KernelInterface *kernel = NULL;
 	uint64_t N = 1UL << (opt_nfactor+1);
 
-	if (IS_VCRYPT() || (IS_VCRYPT_JANE() && N <= 8192))
+	if (IS_VCRYPT() || (IS_SCRYPT_JANE() && N <= 8192))
 	{
 		// high register count kernels (vcrypt, low N-factor scrypt-jane)
 		if (props->major > 3 || (props->major == 3 && props->minor >= 5))
@@ -189,7 +189,7 @@ int cuda_throughput(int thr_id)
 				checkCudaErrors(cudaMalloc((void **) &tmp, state_size)); context_hash[1][thr_id] = tmp;
 			}
 		}
-		else /* if (IS_VCRYPT_JANE()) */
+		else /* if (IS_SCRYPT_JANE()) */
 		{
 			// allocate pinned host memory for vcrypt_core input/output
 			checkCudaErrors(cudaHostAlloc((void **) &tmp, mem_size, cudaHostAllocDefault)); context_X[0][thr_id] = tmp;

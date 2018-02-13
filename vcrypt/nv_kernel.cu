@@ -120,11 +120,11 @@ bool NVKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int thr_
 	{
 		if (LOOKUP_GAP == 1) {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelA<A_VCRYPT>     <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelA<A_VCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelA<A_SCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N));
 			}
 		else {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelA_LG<A_VCRYPT>     <<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelA_LG<A_VCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelA_LG<A_SCRYPT_JANE><<< grid, threads, 0, stream >>>(d_idata, pos, min(pos+batch, N), LOOKUP_GAP);
 			}
 
 		pos += batch;
@@ -137,28 +137,28 @@ bool NVKernel::run_kernel(dim3 grid, dim3 threads, int WARPS_PER_BLOCK, int thr_
 		if (LOOKUP_GAP == 1) {
 			if (texture_cache == 0) {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelB<A_VCRYPT     ,0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelB<A_VCRYPT_JANE,0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelB<A_SCRYPT_JANE,0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 			}
 			else if (texture_cache == 1) {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelB<A_VCRYPT     ,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelB<A_VCRYPT_JANE,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelB<A_SCRYPT_JANE,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 			}
 			else if (texture_cache == 2) {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelB<A_VCRYPT     ,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelB<A_VCRYPT_JANE,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelB<A_SCRYPT_JANE,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N));
 			}
 		} else {
 			if (texture_cache == 0) {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelB_LG<A_VCRYPT     ,0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelB_LG<A_VCRYPT_JANE,0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelB_LG<A_SCRYPT_JANE,0><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 			}
 			else if (texture_cache == 1) {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelB_LG<A_VCRYPT     ,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelB_LG<A_VCRYPT_JANE,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelB_LG<A_SCRYPT_JANE,1><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 			}
 			else if (texture_cache == 2) {
 				if (IS_VCRYPT())      nv_vcrypt_core_kernelB_LG<A_VCRYPT     ,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
-				if (IS_VCRYPT_JANE()) nv_vcrypt_core_kernelB_LG<A_VCRYPT_JANE,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
+				if (IS_SCRYPT_JANE()) nv_vcrypt_core_kernelB_LG<A_SCRYPT_JANE,2><<< grid, threads, 0, stream >>>(d_odata, pos, min(pos+batch, N), LOOKUP_GAP);
 			}
 		}
 
@@ -600,7 +600,7 @@ template <int ALGO> static __device__ void block_mixer(uint4 *B, uint4 *C)
 {
 	switch (ALGO) {
 		case A_VCRYPT:      xor_salsa8(B, C); break;
-		case A_VCRYPT_JANE: xor_chacha8(B, C); break;
+		case A_SCRYPT_JANE: xor_chacha8(B, C); break;
 	}
 }
 
