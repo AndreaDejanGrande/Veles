@@ -1,6 +1,6 @@
-# ccminer
+# Veleš miner
 
-Veles (pronounced as "Velesh") Miner is a vCrypt protocol mining software built for vDinar.
+Veleš (pronounced as "Velesh") Miner is a vCrypt protocol mining software built for vDinar.
 It is forked from its original source code "CCminer" and edited for vDinar's chain structure.
 
 Based on Christian Buchner's &amp; Christian H.'s CUDA project, no more active on github since 2014.
