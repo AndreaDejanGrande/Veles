@@ -1524,6 +1524,7 @@ err_out:
 static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 {
 	uchar merkle_root[64] = { 0 };
+	uchar doncoinbase_hash[64] = { 0 };
 	int i;
 
 	if (sctx->rpc2)
@@ -1551,7 +1552,6 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 	switch (opt_algo) {
 		case ALGO_VCRYPT:
 			sha256d(merkle_root, sctx->job.coinbase, (int)sctx->job.coinbase_size);
-			uchar doncoinbase_hash[64] = { 0 };
 			sha256d(doncoinbase_hash, sctx->job.doncoinbase, (int)sctx->job.doncoinbase_size);
 			memcpy(merkle_root + 32, doncoinbase_hash, 32);
 			sha256d(merkle_root, merkle_root, 64);
