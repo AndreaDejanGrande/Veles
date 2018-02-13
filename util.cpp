@@ -2277,7 +2277,7 @@ void print_hash_tests(void)
 	printpfx("vcrypt", hash);
 
 	vcryptjane_hash(&hash[0], &buf[0]);
-	printpfx("vcrypt-jane", hash);
+	printpfx("scrypt-jane", hash);
 
 	sha256d_hash(&hash[0], &buf[0]);
 	printpfx("sha256d", hash);

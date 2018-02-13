@@ -58,7 +58,7 @@ KernelInterface *Best_Kernel_Heuristics(cudaDeviceProp *props)
 
 	if (IS_VCRYPT() || (IS_VCRYPT_JANE() && N <= 8192))
 	{
-		// high register count kernels (vcrypt, low N-factor vcrypt-jane)
+		// high register count kernels (vcrypt, low N-factor scrypt-jane)
 		if (props->major > 3 || (props->major == 3 && props->minor >= 5))
 			kernel = new NV2Kernel(); // we don't want this for Keccak though
 		else if (props->major == 3 && props->minor == 0)
@@ -68,7 +68,7 @@ KernelInterface *Best_Kernel_Heuristics(cudaDeviceProp *props)
 	}
 	else
 	{
-	   // high N-factor vcrypt-jane = low registers count kernels
+	   // high N-factor scrypt-jane = low registers count kernels
 	   if (props->major > 3 || (props->major == 3 && props->minor >= 5))
 			kernel = new TitanKernel();
 		else if (props->major == 3 && props->minor == 0)

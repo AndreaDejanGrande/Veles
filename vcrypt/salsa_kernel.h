@@ -40,7 +40,7 @@ static int vcrypt_algo = -1;
 static __inline int get_vcrypt_type() {
 	if (vcrypt_algo != -1) return vcrypt_algo;
 	get_currentalgo(algo, 64);
-	if (!strncasecmp(algo,"vcrypt-jane",11)) vcrypt_algo = A_VCRYPT_JANE;
+	if (!strncasecmp(algo,"scrypt-jane",11)) vcrypt_algo = A_VCRYPT_JANE;
 	else if (!strncasecmp(algo,"vcrypt",6)) vcrypt_algo = A_VCRYPT;
 	return vcrypt_algo;
 }

@@ -204,7 +204,7 @@ void keccak512_cpu_free(int thr_id)
 	cudaFree(d_hash3output[thr_id]);
 }
 
-// ----------------BEGIN keccak512 CPU version from vcrypt-jane code --------------------
+// ----------------BEGIN keccak512 CPU version from scrypt-jane code --------------------
 
 #define VCRYPT_HASH_DIGEST_SIZE 64
 #define VCRYPT_KECCAK_F 1600
@@ -212,7 +212,7 @@ void keccak512_cpu_free(int thr_id)
 #define VCRYPT_KECCAK_R (VCRYPT_KECCAK_F - VCRYPT_KECCAK_C) /* 576 */
 #define VCRYPT_HASH_BLOCK_SIZE (VCRYPT_KECCAK_R / 8) /* 72 */
 
-// --------------- END keccak512 CPU version from vcrypt-jane code --------------------
+// --------------- END keccak512 CPU version from scrypt-jane code --------------------
 
 static int BLOCKSIZE = 84;
 

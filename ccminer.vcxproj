@@ -302,7 +302,7 @@
     <CudaCompile Include="neoscrypt\cuda_neoscrypt.cu">
       <MaxRegCount>160</MaxRegCount>
     </CudaCompile>
-    <ClCompile Include="vcrypt-jane.cpp" />
+    <ClCompile Include="scrypt-jane.cpp" />
     <ClCompile Include="vcrypt.cpp" />
     <ClCompile Include="sia\sia-rpc.cpp" />
     <ClCompile Include="skein2.cpp" />

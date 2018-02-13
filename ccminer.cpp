@@ -277,7 +277,7 @@ Options:\n\
 			sia         SIA (Blake2B)\n\
 			sib         Sibcoin (X11+Streebog)\n\
 			vcrypt      vCrypt\n\
-			vcrypt-jane vCrypt-jane Chacha\n\
+			scrypt-jane Scrypt-jane Chacha\n\
 			skein       Skein SHA2 (Skeincoin)\n\
 			skein2      Double Skein (Woodcoin)\n\
 			skunk       Skein Cube Fugue Streebog\n\

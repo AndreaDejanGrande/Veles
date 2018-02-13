@@ -81,7 +81,7 @@ ccminer_SOURCES	= elist.h miner.h compat.h \
 			  x11/c11.cu x11/s3.cu x11/sib.cu x11/veltor.cu x11/cuda_streebog.cu
 
 # vcrypt
-ccminer_SOURCES += vcrypt.cpp vcrypt-jane.cpp \
+ccminer_SOURCES += vcrypt.cpp scrypt-jane.cpp \
     vcrypt/blake.cu vcrypt/keccak.cu vcrypt/sha256.cu \
     vcrypt/salsa_kernel.cu vcrypt/test_kernel.cu \
     vcrypt/fermi_kernel.cu vcrypt/kepler_kernel.cu \

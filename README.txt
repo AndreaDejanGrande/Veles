@@ -43,7 +43,7 @@ Pentablake (Blake 512 x5)
 Neoscrypt (FeatherCoin)
 Revolver (X11evo)
 vCrypt and vCrypt:N
-vCrypt-Jane (Chacha)
+Scrypt-Jane (Chacha)
 Sibcoin (sib)
 Skein (Skein + SHA)
 Signatum (Skein cubehash fugue Streebog)
@@ -367,7 +367,7 @@ features.
                   SM5+ Optimisation of skein based on sp/klaus method (+20%)
 
   Apr. 21th 2015  v1.6.2
-                  Import vCrypt, vCrypt:N and vCrypt-jane from Cudaminer
+                  Import vCrypt, vCrypt:N and Scrypt-jane from Cudaminer
                   Add the --time-limit command line parameter
 
   Apr. 14th 2015  v1.6.1

@@ -1,5 +1,5 @@
 /*
- * vcrypt-jane by Andrew M, https://github.com/floodyberry/vcrypt-jane
+ * scrypt-jane by Andrew M, https://github.com/floodyberry/scrypt-jane
  *
  * Public Domain or MIT License, whichever is easier
  *
@@ -8,9 +8,9 @@
 
 #include "miner.h"
 
-#include "vcrypt/vcrypt-jane.h"
-#include "vcrypt/code/vcrypt-jane-portable.h"
-#include "vcrypt/code/vcrypt-jane-chacha.h"
+#include "vcrypt/scrypt-jane.h"
+#include "vcrypt/code/scrypt-jane-portable.h"
+#include "vcrypt/code/scrypt-jane-chacha.h"
 #include "vcrypt/keccak.h"
 
 #include "vcrypt/salsa_kernel.h"
@@ -401,7 +401,7 @@ unsigned char GetNfactor(unsigned int nTimestamp)
 		} else {
 			if (sscanf(jane_params, "%u,%u,%u", &Ntimestamp, &minN, &maxN) != 3)
 			if (sscanf(jane_params, "%u", &Nfactor) == 1) return Nfactor; // skip bounding against minN, maxN
-			else applog(LOG_INFO, "Unable to parse vcrypt-jane parameters: '%s'. Defaulting to Yacoin.", jane_params);
+			else applog(LOG_INFO, "Unable to parse scrypt-jane parameters: '%s'. Defaulting to Yacoin.", jane_params);
 		}
 	}
 	// determination based on the constants determined above
@@ -459,7 +459,7 @@ int scanhash_vcrypt_jane(int thr_id, struct work *work, uint32_t max_nonce, unsi
 	uint32_t N;
 
 	if (s_Nfactor == 0 && strlen(jane_params) > 0)
-		applog(LOG_INFO, "Given vcrypt-jane parameters: %s", jane_params);
+		applog(LOG_INFO, "Given scrypt-jane parameters: %s", jane_params);
 
 	int Nfactor = GetNfactor(bswap_32x4(pdata[17]));
 	if (Nfactor > vcrypt_maxN) {

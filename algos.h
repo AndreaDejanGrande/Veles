@@ -111,7 +111,7 @@ static const char *algo_names[] = {
 	"quark",
 	"qubit",
 	"vcrypt",
-	"vcrypt-jane",
+	"scrypt-jane",
 	"sha256d",
 	"sha256t",
 	"sia",

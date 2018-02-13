@@ -11,16 +11,16 @@ typedef uint32_t vcrypt_mix_word_t;
 #define VCRYPT_BLOCK_WORDS (VCRYPT_BLOCK_BYTES / sizeof(vcrypt_mix_word_t))
 
 /* must have these here in case block bytes is ever != 64 */
-#include "vcrypt-jane-romix-basic.h"
+#include "scrypt-jane-romix-basic.h"
 
-#include "vcrypt-jane-mix_chacha.h"
+#include "scrypt-jane-mix_chacha.h"
 
 /* cpu agnostic */
 #define VCRYPT_ROMIX_FN vcrypt_ROMix_basic
 #define VCRYPT_MIX_FN chacha_core_basic
 #define VCRYPT_ROMIX_TANGLE_FN vcrypt_romix_convert_endian
 #define VCRYPT_ROMIX_UNTANGLE_FN vcrypt_romix_convert_endian
-#include "vcrypt-jane-romix-template.h"
+#include "scrypt-jane-romix-template.h"
 
 #if !defined(VCRYPT_CHOOSE_COMPILETIME)
 static vcrypt_ROMixfn

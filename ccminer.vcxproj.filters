@@ -273,7 +273,7 @@
     <ClCompile Include="vcrypt.cpp">
       <Filter>Source Files\CUDA\vcrypt</Filter>
     </ClCompile>
-    <ClCompile Include="vcrypt-jane.cpp">
+    <ClCompile Include="scrypt-jane.cpp">
       <Filter>Source Files\CUDA\vcrypt</Filter>
     </ClCompile>
     <ClCompile Include="neoscrypt\neoscrypt.cpp">

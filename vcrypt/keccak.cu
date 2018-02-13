@@ -1,7 +1,7 @@
 //
 //  =============== KECCAK part on nVidia GPU ======================
 //
-// The keccak512 (SHA-3) is used in the PBKDF2 for vcrypt-jane coins
+// The keccak512 (SHA-3) is used in the PBKDF2 for scrypt-jane coins
 // in place of the SHA2 based PBKDF2 used in vcrypt coins.
 //
 // NOTE: compile this .cu module for compute_20,sm_20 with --maxrregcount=64
