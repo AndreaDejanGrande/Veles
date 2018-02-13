@@ -264,10 +264,10 @@
     <ClCompile Include="lyra2\Lyra2Z.c" />
     <ClInclude Include="equi\eqcuda.hpp" />
     <ClInclude Include="equi\equihash.h" />
-    <ClInclude Include="neovcrypt\neovcrypt.h" />
-    <ClCompile Include="neovcrypt\neovcrypt.cpp" />
-    <ClCompile Include="neovcrypt\neovcrypt-cpu.c" />
-    <ClInclude Include="neovcrypt\cuda_vectors.h" />
+    <ClInclude Include="neoscrypt\neoscrypt.h" />
+    <ClCompile Include="neoscrypt\neoscrypt.cpp" />
+    <ClCompile Include="neoscrypt\neoscrypt-cpu.c" />
+    <ClInclude Include="neoscrypt\cuda_vectors.h" />
     <ClInclude Include="x11\cuda_x11_simd512_sm2.cuh" />
     <CudaCompile Include="Algo256\bmw.cu" />
     <CudaCompile Include="Algo256\cuda_bmw.cu">
@@ -299,7 +299,7 @@
       <MaxRegCount>0</MaxRegCount>
       <CodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">compute_61,sm_61;compute_52,sm_52;compute_50,sm_50;compute_30,sm_30</CodeGeneration>
     </CudaCompile>
-    <CudaCompile Include="neovcrypt\cuda_neovcrypt.cu">
+    <CudaCompile Include="neoscrypt\cuda_neoscrypt.cu">
       <MaxRegCount>160</MaxRegCount>
     </CudaCompile>
     <ClCompile Include="vcrypt-jane.cpp" />

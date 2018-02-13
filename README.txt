@@ -40,7 +40,7 @@ Luffa (Joincoin)
 Keccak (Maxcoin)
 Pentablake (Blake 512 x5)
 1Coin Triple S
-Neovcrypt (FeatherCoin)
+Neoscrypt (FeatherCoin)
 Revolver (X11evo)
 vCrypt and vCrypt:N
 vCrypt-Jane (Chacha)
@@ -288,7 +288,7 @@ features.
                   Pascal support with cuda 8
                   lbry new multi sha / ripemd algo (LBC)
                   x11evo algo (XRE)
-                  Lyra2v2, Neovcrypt and Decred improvements
+                  Lyra2v2, Neoscrypt and Decred improvements
                   Enhance windows NVAPI clock and power limits
                   Led support for mining/shares activity on windows
 
@@ -360,7 +360,7 @@ features.
                   Drop Whirlpool and whirpoolx algos, no more used...
 
   May 15th 2015   v1.6.3
-                  Import and adapt Neovcrypt from djm34 work (SM 5+ only)
+                  Import and adapt Neoscrypt from djm34 work (SM 5+ only)
                   Conditional mining options based on gpu temp, network diff and rate
                   background option implementation for windows too
                   "Multithreaded" devices (-d 0,0) intensity and stats changes

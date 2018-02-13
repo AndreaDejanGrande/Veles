@@ -265,7 +265,7 @@ Options:\n\
 			lyra2v2     VertCoin\n\
 			lyra2z      ZeroCoin (3rd impl)\n\
 			myr-gr      Myriad-Groestl\n\
-			neovcrypt   FeatherCoin, Phoenix, UFO...\n\
+			neoscrypt   FeatherCoin, Phoenix, UFO...\n\
 			nist5       NIST5 (TalkCoin)\n\
 			penta       Pentablake hash (5x Blake 512)\n\
 			phi         BHCoin\n\
@@ -693,7 +693,7 @@ static bool work_decode(const json_t *val, struct work *work)
 		data_size = 192;
 		adata_sz = 180/4;
 		break;
-	case ALGO_NEOVCRYPT:
+	case ALGO_NEOSCRYPT:
 	case ALGO_ZR5:
 		data_size = 80;
 		adata_sz = data_size / 4;
@@ -1697,7 +1697,7 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		case ALGO_HMQ1725:
 		case ALGO_JACKPOT:
 		case ALGO_JHA:
-		case ALGO_NEOVCRYPT:
+		case ALGO_NEOSCRYPT:
 		case ALGO_VCRYPT:
 		case ALGO_VCRYPT_JANE:
 			work_set_target(work, sctx->job.diff / (65536.0 * opt_difficulty));
@@ -2262,7 +2262,7 @@ static void *miner_thread(void *userdata)
 				break;
 			case ALGO_LYRA2:
 			case ALGO_LYRA2Z:
-			case ALGO_NEOVCRYPT:
+			case ALGO_NEOSCRYPT:
 			case ALGO_SIB:
 			case ALGO_VCRYPT:
 			case ALGO_VELTOR:
@@ -2419,8 +2419,8 @@ static void *miner_thread(void *userdata)
 		case ALGO_LYRA2Z:
 			rc = scanhash_lyra2Z(thr_id, &work, max_nonce, &hashes_done);
 			break;
-		case ALGO_NEOVCRYPT:
-			rc = scanhash_neovcrypt(thr_id, &work, max_nonce, &hashes_done);
+		case ALGO_NEOSCRYPT:
+			rc = scanhash_neoscrypt(thr_id, &work, max_nonce, &hashes_done);
 			break;
 		case ALGO_NIST5:
 			rc = scanhash_nist5(thr_id, &work, max_nonce, &hashes_done);

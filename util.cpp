@@ -2252,8 +2252,8 @@ void print_hash_tests(void)
 	myriadhash(&hash[0], &buf[0]);
 	printpfx("myriad", hash);
 
-	neovcrypt(&hash[0], &buf[0], 80000620);
-	printpfx("neovcrypt", hash);
+	neoscrypt(&hash[0], &buf[0], 80000620);
+	printpfx("neoscrypt", hash);
 
 	nist5hash(&hash[0], &buf[0]);
 	printpfx("nist5", hash);

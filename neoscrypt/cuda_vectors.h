@@ -480,7 +480,7 @@ static __forceinline__ __device__ uint32_t rotateR(uint32_t vec4, uint32_t shift
 
 // right shift a 64-bytes integer (256-bits) by 0 8 16 24 bits
 // require a uint32_t[9] ret array
-// note: djm neovcrypt implementation is near the limits of gpu capabilities
+// note: djm neoscrypt implementation is near the limits of gpu capabilities
 //       and weird behaviors can happen when tuning device functions code...
 __device__ static void shift256R(uint32_t* ret, const uint8 &vec4, uint32_t shift)
 {

@@ -2,7 +2,7 @@
 extern "C" {
 #endif
 
-void neovcrypt(unsigned char *output, const unsigned char *input, unsigned int profile);
+void neoscrypt(unsigned char *output, const unsigned char *input, unsigned int profile);
 
 #if (__cplusplus)
 }

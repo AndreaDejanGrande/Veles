@@ -79,7 +79,7 @@
     <Filter Include="Source Files\CUDA\vcrypt">
       <UniqueIdentifier>{c26f5b02-37b5-4420-a4e8-ee1ad517dc95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\neovcrypt">
+    <Filter Include="Source Files\neoscrypt">
       <UniqueIdentifier>{2037fd0d-e7a2-4da8-956c-150aec726a99}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\CUDA\lyra2">
@@ -276,11 +276,11 @@
     <ClCompile Include="vcrypt-jane.cpp">
       <Filter>Source Files\CUDA\vcrypt</Filter>
     </ClCompile>
-    <ClCompile Include="neovcrypt\neovcrypt.cpp">
-      <Filter>Source Files\neovcrypt</Filter>
+    <ClCompile Include="neoscrypt\neoscrypt.cpp">
+      <Filter>Source Files\neoscrypt</Filter>
     </ClCompile>
-    <ClCompile Include="neovcrypt\neovcrypt-cpu.c">
-      <Filter>Source Files\neovcrypt</Filter>
+    <ClCompile Include="neoscrypt\neoscrypt-cpu.c">
+      <Filter>Source Files\neoscrypt</Filter>
     </ClCompile>
     <ClCompile Include="skein2.cpp">
       <Filter>Source Files\CUDA</Filter>
@@ -521,11 +521,11 @@
     <ClInclude Include="vcrypt\salsa_kernel.h">
       <Filter>Source Files\CUDA\vcrypt</Filter>
     </ClInclude>
-    <ClInclude Include="neovcrypt\neovcrypt.h">
-      <Filter>Source Files\neovcrypt</Filter>
+    <ClInclude Include="neoscrypt\neoscrypt.h">
+      <Filter>Source Files\neoscrypt</Filter>
     </ClInclude>
-    <ClInclude Include="neovcrypt\cuda_vectors.h">
-      <Filter>Source Files\neovcrypt</Filter>
+    <ClInclude Include="neoscrypt\cuda_vectors.h">
+      <Filter>Source Files\neoscrypt</Filter>
     </ClInclude>
     <ClInclude Include="hefty1.h">
       <Filter>Source Files\CUDA\heavy</Filter>
@@ -889,8 +889,8 @@
     <CudaCompile Include="vcrypt\titan_kernel.cu">
       <Filter>Source Files\CUDA\vcrypt</Filter>
     </CudaCompile>
-    <CudaCompile Include="neovcrypt\cuda_neovcrypt.cu">
-      <Filter>Source Files\neovcrypt</Filter>
+    <CudaCompile Include="neoscrypt\cuda_neoscrypt.cu">
+      <Filter>Source Files\neoscrypt</Filter>
     </CudaCompile>
     <CudaCompile Include="Algo256\bmw.cu">
       <Filter>Source Files\CUDA\Algo256</Filter>

@@ -1,4 +1,4 @@
-// originally from djm34 - github.com/djm34/ccminer-sp-neovcrypt
+// originally from djm34 - github.com/djm34/ccminer-sp-neoscrypt
 // kernel code from Nanashi Meiyo-Meijin 1.7.6-r10 (July 2016)
 
 #include <stdio.h>
@@ -693,7 +693,7 @@ uint4 chacha_small_parallel_rnd(const uint4 X)
 }
 
 __device__ __forceinline__
-void neovcrypt_chacha(uint4 XV[4])
+void neoscrypt_chacha(uint4 XV[4])
 {
 	uint4 temp;
 
@@ -705,7 +705,7 @@ void neovcrypt_chacha(uint4 XV[4])
 }
 
 __device__ __forceinline__
-void neovcrypt_salsa(uint4 XV[4])
+void neoscrypt_salsa(uint4 XV[4])
 {
 	uint4 temp;
 
@@ -1325,7 +1325,7 @@ static void Blake2Shost(uint32_t * inout, const uint32_t * inkey)
 
 __global__
 __launch_bounds__(TPB2, 1)
-void neovcrypt_gpu_hash_start(const int stratum, const uint32_t startNonce)
+void neoscrypt_gpu_hash_start(const int stratum, const uint32_t startNonce)
 {
 	__shared__ uint32_t s_data[64 * TPB2];
 
@@ -1343,7 +1343,7 @@ void neovcrypt_gpu_hash_start(const int stratum, const uint32_t startNonce)
 
 __global__
 __launch_bounds__(TPB, 1)
-void neovcrypt_gpu_hash_chacha1()
+void neoscrypt_gpu_hash_chacha1()
 {
 	const uint32_t thread = (blockDim.y * blockIdx.x + threadIdx.y);
 	const uint32_t shift = SHIFT * 8U * (thread & 8191);
@@ -1364,7 +1364,7 @@ void neovcrypt_gpu_hash_chacha1()
 		uint32_t offset = shift + i * 8U;
 		for (int j = 0; j < 4; j++)
 			((uint4*)(W + offset))[j * 4 + threadIdx.x] = X[j];
-		neovcrypt_chacha(X);
+		neoscrypt_chacha(X);
 	}
 
 	#pragma nounroll
@@ -1373,7 +1373,7 @@ void neovcrypt_gpu_hash_chacha1()
 		uint32_t offset = shift + (WarpShuffle(X[3].x, 0, 4) & 0x7F) * 8U;
 		for (int j = 0; j < 4; j++)
 			X[j] ^= ((uint4*)(W + offset))[j * 4 + threadIdx.x];
-		neovcrypt_chacha(X);
+		neoscrypt_chacha(X);
 	}
 
 	#pragma unroll
@@ -1388,7 +1388,7 @@ void neovcrypt_gpu_hash_chacha1()
 
 __global__
 __launch_bounds__(TPB, 1)
-void neovcrypt_gpu_hash_salsa1()
+void neoscrypt_gpu_hash_salsa1()
 {
 	const uint32_t thread = (blockDim.y * blockIdx.x + threadIdx.y);
 	const uint32_t shift = SHIFT * 8U * (thread & 8191);
@@ -1409,7 +1409,7 @@ void neovcrypt_gpu_hash_salsa1()
 		uint32_t offset = shift + i * 8U;
 		for (int j = 0; j < 4; j++)
 			((uint4*)(W + offset))[j * 4 + threadIdx.x] = Z[j];
-		neovcrypt_salsa(Z);
+		neoscrypt_salsa(Z);
 	}
 
 	#pragma nounroll
@@ -1418,7 +1418,7 @@ void neovcrypt_gpu_hash_salsa1()
 		uint32_t offset = shift + (WarpShuffle(Z[3].x, 0, 4) & 0x7F) * 8U;
 		for (int j = 0; j < 4; j++)
 			Z[j] ^= ((uint4*)(W + offset))[j * 4 + threadIdx.x];
-		neovcrypt_salsa(Z);
+		neoscrypt_salsa(Z);
 	}
 	#pragma unroll
 	for (int i = 0; i < 4; i++)
@@ -1432,7 +1432,7 @@ void neovcrypt_gpu_hash_salsa1()
 
 __global__
 __launch_bounds__(TPB2, 8)
-void neovcrypt_gpu_hash_ending(const int stratum, const uint32_t startNonce, uint32_t *resNonces)
+void neoscrypt_gpu_hash_ending(const int stratum, const uint32_t startNonce, uint32_t *resNonces)
 {
 	__shared__ uint32_t s_data[64 * TPB2];
 
@@ -1469,7 +1469,7 @@ static __thread uint32_t *Trans2 = NULL; // 2 streams
 static __thread uint32_t *Trans3 = NULL; // 2 streams
 
 __host__
-void neovcrypt_init(int thr_id, uint32_t threads)
+void neoscrypt_init(int thr_id, uint32_t threads)
 {
 	cuda_get_arch(thr_id);
 
@@ -1486,7 +1486,7 @@ void neovcrypt_init(int thr_id, uint32_t threads)
 }
 
 __host__
-void neovcrypt_free(int thr_id)
+void neoscrypt_free(int thr_id)
 {
 	cudaFree(d_NNonce[thr_id]);
 
@@ -1497,7 +1497,7 @@ void neovcrypt_free(int thr_id)
 }
 
 __host__
-void neovcrypt_hash_k4(int thr_id, uint32_t threads, uint32_t startNounce, uint32_t *resNonces, bool stratum)
+void neoscrypt_hash_k4(int thr_id, uint32_t threads, uint32_t startNounce, uint32_t *resNonces, bool stratum)
 {
 	CUDA_SAFE_CALL(cudaMemset(d_NNonce[thr_id], 0xff, 2 * sizeof(uint32_t)));
 
@@ -1509,18 +1509,18 @@ void neovcrypt_hash_k4(int thr_id, uint32_t threads, uint32_t startNounce, uint3
 	dim3 grid3((threads * 4 + threadsperblock - 1) / threadsperblock);
 	dim3 block3(4, threadsperblock >> 2);
 
-	neovcrypt_gpu_hash_start <<<grid2, block2>>> (stratum, startNounce); //fastkdf
+	neoscrypt_gpu_hash_start <<<grid2, block2>>> (stratum, startNounce); //fastkdf
 
-	neovcrypt_gpu_hash_salsa1 <<<grid3, block3>>> ();
-	neovcrypt_gpu_hash_chacha1 <<<grid3, block3>>> ();
+	neoscrypt_gpu_hash_salsa1 <<<grid3, block3>>> ();
+	neoscrypt_gpu_hash_chacha1 <<<grid3, block3>>> ();
 
-	neovcrypt_gpu_hash_ending <<<grid2, block2>>> (stratum, startNounce, d_NNonce[thr_id]); //fastkdf+end
+	neoscrypt_gpu_hash_ending <<<grid2, block2>>> (stratum, startNounce, d_NNonce[thr_id]); //fastkdf+end
 
 	CUDA_SAFE_CALL(cudaMemcpy(resNonces, d_NNonce[thr_id], 2 * sizeof(uint32_t), cudaMemcpyDeviceToHost));
 }
 
 __host__
-void neovcrypt_setBlockTarget(uint32_t* const pdata, uint32_t* const target)
+void neoscrypt_setBlockTarget(uint32_t* const pdata, uint32_t* const target)
 {
 	uint32_t PaddedMessage[64];
 	uint32_t input[16], key[16] = { 0 };

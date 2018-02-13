@@ -2,17 +2,17 @@
 #include <string.h>
 #include <miner.h>
 
-#include "neovcrypt.h"
+#include "neoscrypt.h"
 
-extern void neovcrypt_setBlockTarget(uint32_t* const data, uint32_t* const ptarget);
+extern void neoscrypt_setBlockTarget(uint32_t* const data, uint32_t* const ptarget);
 
-extern void neovcrypt_init(int thr_id, uint32_t threads);
-extern void neovcrypt_free(int thr_id);
-extern void neovcrypt_hash_k4(int thr_id, uint32_t threads, uint32_t startNounce, uint32_t *resNonces, bool stratum);
+extern void neoscrypt_init(int thr_id, uint32_t threads);
+extern void neoscrypt_free(int thr_id);
+extern void neoscrypt_hash_k4(int thr_id, uint32_t threads, uint32_t startNounce, uint32_t *resNonces, bool stratum);
 
 static bool init[MAX_GPUS] = { 0 };
 
-int scanhash_neovcrypt(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done)
+int scanhash_neoscrypt(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done)
 {
 	uint32_t _ALIGN(64) endiandata[20];
 	uint32_t *pdata = work->data;
@@ -41,12 +41,12 @@ int scanhash_neovcrypt(int thr_id, struct work* work, uint32_t max_nonce, unsign
 			cudaGetLastError(); // reset errors if device is not "reset"
 		}
 		if (device_sm[dev_id] <= 300) {
-			gpulog(LOG_ERR, thr_id, "Sorry neovcrypt is not supported on SM 3.0 devices");
+			gpulog(LOG_ERR, thr_id, "Sorry neoscrypt is not supported on SM 3.0 devices");
 			proper_exit(EXIT_CODE_CUDA_ERROR);
 		}
 		gpulog(LOG_INFO, thr_id, "Intensity set to %g (+5), %u cuda threads", throughput2intensity(throughput), throughput);
 
-		neovcrypt_init(thr_id, throughput);
+		neoscrypt_init(thr_id, throughput);
 
 		init[thr_id] = true;
 	}
@@ -59,11 +59,11 @@ int scanhash_neovcrypt(int thr_id, struct work* work, uint32_t max_nonce, unsign
 			endiandata[k] = pdata[k];
 	}
 
-	neovcrypt_setBlockTarget(endiandata,ptarget);
+	neoscrypt_setBlockTarget(endiandata,ptarget);
 
 	do {
 		memset(work->nonces, 0xff, sizeof(work->nonces));
-		neovcrypt_hash_k4(thr_id, throughput, pdata[19], work->nonces, have_stratum);
+		neoscrypt_hash_k4(thr_id, throughput, pdata[19], work->nonces, have_stratum);
 
 		*hashes_done = pdata[19] - first_nonce + throughput;
 
@@ -77,7 +77,7 @@ int scanhash_neovcrypt(int thr_id, struct work* work, uint32_t max_nonce, unsign
 			} else {
 				endiandata[19] = work->nonces[0];
 			}
-			neovcrypt((uchar*)vhash, (uchar*) endiandata, 0x80000620U);
+			neoscrypt((uchar*)vhash, (uchar*) endiandata, 0x80000620U);
 
 			if (vhash[7] <= Htarg && fulltest(vhash, ptarget)) {
 				work->valid_nonces = 1;
@@ -106,14 +106,14 @@ int scanhash_neovcrypt(int thr_id, struct work* work, uint32_t max_nonce, unsign
 }
 
 // cleanup
-void free_neovcrypt(int thr_id)
+void free_neoscrypt(int thr_id)
 {
 	if (!init[thr_id])
 		return;
 
 	cudaThreadSynchronize();
 
-	neovcrypt_free(thr_id);
+	neoscrypt_free(thr_id);
 	init[thr_id] = false;
 
 	cudaDeviceSynchronize();

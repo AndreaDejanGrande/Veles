@@ -140,7 +140,7 @@ extern "C" {
 	int blake2s( uint8_t *out, const void *in, const void *key, const uint8_t outlen, const uint64_t inlen, uint8_t keylen );
 
 	// Direct Hash Mining Helpers
-	#define blake2s_salt32(out, in, inlen, key32) blake2s(out, in, key32, 32, inlen, 32) /* neovcrypt */
+	#define blake2s_salt32(out, in, inlen, key32) blake2s(out, in, key32, 32, inlen, 32) /* neoscrypt */
 	#define blake2s_simple(out, in, inlen) blake2s(out, in, NULL, 32, inlen, 0)
 
 #if defined(__cplusplus)

@@ -77,7 +77,7 @@ void algo_free_all(int thr_id)
 	free_lyra2v2(thr_id);
 	free_lyra2Z(thr_id);
 	free_myriad(thr_id);
-	free_neovcrypt(thr_id);
+	free_neoscrypt(thr_id);
 	free_nist5(thr_id);
 	free_pentablake(thr_id);
 	free_phi(thr_id);
@@ -143,7 +143,7 @@ bool bench_algo_switch_next(int thr_id)
 		// incompatible SM 2.1 kernels...
 		if (algo == ALGO_GROESTL) algo++;
 		if (algo == ALGO_MYR_GR) algo++;
-		if (algo == ALGO_NEOVCRYPT) algo++;
+		if (algo == ALGO_NEOSCRYPT) algo++;
 		if (algo == ALGO_WHIRLPOOLX) algo++;
 	}
 	// and unwanted ones...

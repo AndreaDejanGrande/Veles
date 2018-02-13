@@ -16,7 +16,7 @@
 
 #include <cuda_helper.h>
 #include <cuda_vector_uint2x4.h>
-#include "neovcrypt/cuda_vectors.h"
+#include "neoscrypt/cuda_vectors.h"
 
 typedef unsigned char uchar;
 
