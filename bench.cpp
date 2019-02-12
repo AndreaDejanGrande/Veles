@@ -59,7 +59,6 @@ void algo_free_all(int thr_id)
 	free_cryptonight(thr_id);
 	free_decred(thr_id);
 	free_deep(thr_id);
-	free_equihash(thr_id);
 	free_keccak256(thr_id);
 	free_fresh(thr_id);
 	free_fugue256(thr_id);
@@ -73,9 +72,6 @@ void algo_free_all(int thr_id)
 	free_jha(thr_id);
 	free_lbry(thr_id);
 	free_luffa(thr_id);
-	free_lyra2(thr_id);
-	free_lyra2v2(thr_id);
-	free_lyra2Z(thr_id);
 	free_myriad(thr_id);
 	free_neoscrypt(thr_id);
 	free_nist5(thr_id);

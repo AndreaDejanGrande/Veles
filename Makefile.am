@@ -22,8 +22,6 @@ ccminer_SOURCES	= elist.h miner.h compat.h \
 			  ccminer.cpp pools.cpp util.cpp bench.cpp bignum.cpp \
 			  api.cpp hashlog.cpp nvml.cpp stats.cpp sysinfos.cpp cuda.cpp \
 			  nvsettings.cpp \
-			  equi/equi-stratum.cpp equi/equi.cpp equi/blake2/blake2bx.cpp \
-			  equi/equihash.cpp equi/cuda_equi.cu \
 			  heavy/heavy.cu \
 			  heavy/cuda_blake512.cu heavy/cuda_blake512.h \
 			  heavy/cuda_combine.cu heavy/cuda_combine.h \
@@ -35,10 +33,6 @@ ccminer_SOURCES	= elist.h miner.h compat.h \
 			  fuguecoin.cpp Algo256/cuda_fugue256.cu sph/fugue.c uint256.h \
 			  groestlcoin.cpp cuda_groestlcoin.cu cuda_groestlcoin.h \
 			  myriadgroestl.cpp cuda_myriadgroestl.cu \
-			  lyra2/Lyra2.c lyra2/Sponge.c \
-			  lyra2/lyra2RE.cu lyra2/cuda_lyra2.cu \
-		          lyra2/lyra2REv2.cu lyra2/cuda_lyra2v2.cu \
-			  lyra2/Lyra2Z.c lyra2/lyra2Z.cu lyra2/cuda_lyra2Z.cu \
 			  Algo256/cuda_bmw256.cu Algo256/cuda_cubehash256.cu \
 			  Algo256/cuda_blake256.cu Algo256/cuda_groestl256.cu \
 			  Algo256/cuda_keccak256_sm3.cu Algo256/cuda_keccak256.cu Algo256/cuda_skein256.cu \
@@ -107,7 +101,6 @@ ccminer_LDADD += -lomp
 endif
 
 #ccminer_CPPFLAGS += -DUSE_LIBSODIUM
-#ccminer_LDFLAGS += -Lequi/lib
 #ccminer_LDADD += -lsodium
 ccminer_LDADD += -lcuda
 

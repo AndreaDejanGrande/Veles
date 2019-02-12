@@ -70,9 +70,6 @@
     <Filter Include="Source Files\CUDA\Algo256">
       <UniqueIdentifier>{9762c92c-9677-4044-8292-ff6ba4bfdd89}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\lyra2">
-      <UniqueIdentifier>{2ff6e4ce-7c92-4cb2-a3ad-c331e94fd81d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Ressources">
       <UniqueIdentifier>{f5117ccb-a70d-411a-b7ea-d6faed230bc7}</UniqueIdentifier>
     </Filter>
@@ -81,9 +78,6 @@
     </Filter>
     <Filter Include="Source Files\neoscrypt">
       <UniqueIdentifier>{2037fd0d-e7a2-4da8-956c-150aec726a99}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CUDA\lyra2">
-      <UniqueIdentifier>{1613763f-895c-4321-b58b-6f5849868956}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\CUDA\lbry">
       <UniqueIdentifier>{3079ea1f-f768-455a-acd6-f517fac535b4}</UniqueIdentifier>
@@ -105,9 +99,6 @@
     </Filter>
     <Filter Include="Source Files\CUDA\xmr">
       <UniqueIdentifier>{0f9aec5e-5409-488f-992a-2c108590d1ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\equi">
-      <UniqueIdentifier>{031afae7-2a78-4e32-9738-4b589b6f7ff3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\CUDA\tribus">
       <UniqueIdentifier>{1e548d79-c217-4203-989a-a592fe2b2de3}</UniqueIdentifier>
@@ -261,15 +252,6 @@
     <ClInclude Include="compat\pthreads\pthread.h">
       <Filter>Header Files\compat</Filter>
     </ClInclude>
-    <ClCompile Include="lyra2\Lyra2.c">
-      <Filter>Source Files\sph</Filter>
-    </ClCompile>
-    <ClCompile Include="lyra2\Sponge.c">
-      <Filter>Source Files\sph</Filter>
-    </ClCompile>
-    <ClCompile Include="lyra2\Lyra2Z.c">
-      <Filter>Source Files\sph</Filter>
-    </ClCompile>
     <ClCompile Include="vcrypt.cpp">
       <Filter>Source Files\CUDA\vcrypt</Filter>
     </ClCompile>
@@ -335,18 +317,6 @@
     </ClCompile>
     <ClCompile Include="crypto\wildkeccak-cpu.cpp">
       <Filter>Source Files\crypto\bbr</Filter>
-    </ClCompile>
-    <ClCompile Include="equi\equi.cpp">
-      <Filter>Source Files\equi</Filter>
-    </ClCompile>
-    <ClCompile Include="equi\equihash.cpp">
-      <Filter>Source Files\equi</Filter>
-    </ClCompile>
-    <ClCompile Include="equi\equi-stratum.cpp">
-      <Filter>Source Files\equi</Filter>
-    </ClCompile>
-    <ClCompile Include="equi\blake2\blake2bx.cpp">
-      <Filter>Source Files\equi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -500,15 +470,6 @@
     <ClInclude Include="compat\jansson\jansson_config.h">
       <Filter>Header Files\compat</Filter>
     </ClInclude>
-    <ClInclude Include="lyra2\Lyra2.h">
-      <Filter>Header Files\lyra2</Filter>
-    </ClInclude>
-    <ClInclude Include="lyra2\Lyra2Z.h">
-      <Filter>Header Files\lyra2</Filter>
-    </ClInclude>
-    <ClInclude Include="lyra2\Sponge.h">
-      <Filter>Header Files\lyra2</Filter>
-    </ClInclude>
     <ClInclude Include="quark\groestl_transf_quad.h">
       <Filter>Source Files\CUDA\quark</Filter>
     </ClInclude>
@@ -532,15 +493,6 @@
     </ClInclude>
     <ClInclude Include="bignum.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lyra2\cuda_lyra2v2_sm3.cuh">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </ClInclude>
-    <ClInclude Include="lyra2\cuda_lyra2_sm2.cuh">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </ClInclude>
-    <ClInclude Include="lyra2\cuda_lyra2Z_sm5.cuh">
-      <Filter>Source Files\CUDA\lyra2</Filter>
     </ClInclude>
     <ClInclude Include="quark\cuda_quark_blake512_sp.cuh">
       <Filter>Source Files\CUDA\quark</Filter>
@@ -589,12 +541,6 @@
     </ClInclude>
     <ClInclude Include="crypto\cryptonight.h">
       <Filter>Source Files\CUDA\xmr</Filter>
-    </ClInclude>
-    <ClInclude Include="equi\eqcuda.hpp">
-      <Filter>Source Files\equi</Filter>
-    </ClInclude>
-    <ClInclude Include="equi\equihash.h">
-      <Filter>Source Files\equi</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -898,24 +844,6 @@
     <CudaCompile Include="Algo256\cuda_bmw.cu">
       <Filter>Source Files\CUDA\Algo256</Filter>
     </CudaCompile>
-    <CudaCompile Include="lyra2\cuda_lyra2.cu">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </CudaCompile>
-    <CudaCompile Include="lyra2\cuda_lyra2v2.cu">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </CudaCompile>
-    <CudaCompile Include="lyra2\lyra2RE.cu">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </CudaCompile>
-    <CudaCompile Include="lyra2\lyra2REv2.cu">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </CudaCompile>
-    <CudaCompile Include="lyra2\cuda_lyra2Z.cu">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </CudaCompile>
-    <CudaCompile Include="lyra2\lyra2Z.cu">
-      <Filter>Source Files\CUDA\lyra2</Filter>
-    </CudaCompile>
     <CudaCompile Include="Algo256\blake2s.cu">
       <Filter>Source Files\CUDA\Algo256</Filter>
     </CudaCompile>
@@ -963,9 +891,6 @@
     </CudaCompile>
     <CudaCompile Include="crypto\wildkeccak.cu">
       <Filter>Source Files\CUDA</Filter>
-    </CudaCompile>
-    <CudaCompile Include="equi\cuda_equi.cu">
-      <Filter>Source Files\equi</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

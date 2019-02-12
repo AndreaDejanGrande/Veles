@@ -1177,20 +1177,8 @@ static bool stratum_parse_extranonce(struct stratum_ctx *sctx, json_t *params, i
 	xn2_size = (int) json_integer_value(json_array_get(params, pndx+1));
 	if (!xn2_size) {
 		char algo[64] = { 0 };
-		get_currentalgo(algo, sizeof(algo));
-		if (strcmp(algo, "equihash") == 0) {
-			int xn1_size = (int)strlen(xnonce1) / 2;
-			xn2_size = 32 - xn1_size;
-			if (xn1_size < 4 || xn1_size > 12) {
-				// This miner iterates the nonces at data32[30]
-				applog(LOG_ERR, "Unsupported extranonce size of %d (12 maxi)", xn1_size);
-				goto out;
-			}
-			goto skip_n2;
-		} else {
-			applog(LOG_ERR, "Failed to get extranonce2_size");
-			goto out;
-		}
+		applog(LOG_ERR, "Failed to get extranonce2_size");
+		goto out;
 	}
 	if (xn2_size < 2 || xn2_size > 16) {
 		applog(LOG_ERR, "Failed to get valid n2size in parse_extranonce (%d)", xn2_size);
@@ -1450,10 +1438,6 @@ static bool stratum_notify(struct stratum_ctx *sctx, json_t *params)
 	char algo[64] = { 0 };
 	get_currentalgo(algo, sizeof(algo));
 	bool has_claim = !strcasecmp(algo, "lbry");
-
-	if (sctx->is_equihash) {
-		return equi_stratum_notify(sctx, params);
-	}
 
 	job_id = json_string_value(json_array_get(params, p++));
 	prevhash = json_string_value(json_array_get(params, p++));
@@ -1801,9 +1785,6 @@ static bool stratum_show_message(struct stratum_ctx *sctx, json_t *id, json_t *p
 	json_t *val;
 	bool ret;
 
-	if (sctx->is_equihash)
-		return equi_stratum_show_message(sctx, id, params);
-
 	val = json_array_get(params, 0);
 	if (val)
 		applog(LOG_NOTICE, "MESSAGE FROM SERVER: %s", json_string_value(val));
@@ -1875,11 +1856,6 @@ bool stratum_handle_method(struct stratum_ctx *sctx, const char *s)
 	}
 	if (!strcasecmp(method, "mining.set_difficulty")) {
 		ret = stratum_set_difficulty(sctx, params);
-		goto out;
-	}
-	if (!strcasecmp(method, "mining.set_target")) {
-		sctx->is_equihash = true;
-		ret = equi_stratum_set_target(sctx, params);
 		goto out;
 	}
 	if (!strcasecmp(method, "mining.set_extranonce")) {
@@ -2240,15 +2216,6 @@ void print_hash_tests(void)
 
 	luffa_hash(&hash[0], &buf[0]);
 	printpfx("luffa", hash);
-
-	lyra2re_hash(&hash[0], &buf[0]);
-	printpfx("lyra2", hash);
-
-	lyra2v2_hash(&hash[0], &buf[0]);
-	printpfx("lyra2v2", hash);
-
-	lyra2Z_hash(&hash[0], &buf[0]);
-	printpfx("lyra2z", hash);
 
 	myriadhash(&hash[0], &buf[0]);
 	printpfx("myriad", hash);

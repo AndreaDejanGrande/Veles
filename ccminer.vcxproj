@@ -236,12 +236,6 @@
     <ClCompile Include="crypto\cryptolight-cpu.cpp" />
     <ClCompile Include="crypto\cryptonight-cpu.cpp" />
     <ClCompile Include="crypto\cpu\c_keccak.c" />
-    <ClCompile Include="equi\blake2\blake2bx.cpp">
-      <EnableEnhancedInstructionSet Condition="'$(Platform)'=='Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
-    </ClCompile>
-    <ClCompile Include="equi\equi-stratum.cpp" />
-    <ClCompile Include="equi\equi.cpp" />
-    <ClCompile Include="equi\equihash.cpp" />
     <ClCompile Include="nvapi.cpp" />
     <ClCompile Include="nvsettings.cpp" />
     <ClCompile Include="pools.cpp" />
@@ -259,11 +253,6 @@
     <ClCompile Include="crc32.c" />
     <ClCompile Include="hefty1.c" />
     <ClCompile Include="myriadgroestl.cpp" />
-    <ClCompile Include="lyra2\Lyra2.c" />
-    <ClCompile Include="lyra2\Sponge.c" />
-    <ClCompile Include="lyra2\Lyra2Z.c" />
-    <ClInclude Include="equi\eqcuda.hpp" />
-    <ClInclude Include="equi\equihash.h" />
     <ClInclude Include="neoscrypt\neoscrypt.h" />
     <ClCompile Include="neoscrypt\neoscrypt.cpp" />
     <ClCompile Include="neoscrypt\neoscrypt-cpu.c" />
@@ -292,12 +281,6 @@
     <ClInclude Include="crypto\cn_skein.cuh" />
     <CudaCompile Include="crypto\wildkeccak.cu">
       <MaxRegCount>128</MaxRegCount>
-    </CudaCompile>
-    <CudaCompile Include="equi\cuda_equi.cu">
-      <CodeGeneration>compute_52,sm_52;compute_50,sm_50;compute_30,sm_30</CodeGeneration>
-      <AdditionalOptions> -Xptxas -dlcm=ca -Xptxas -dscm=cs %(AdditionalOptions)</AdditionalOptions>
-      <MaxRegCount>0</MaxRegCount>
-      <CodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">compute_61,sm_61;compute_52,sm_52;compute_50,sm_50;compute_30,sm_30</CodeGeneration>
     </CudaCompile>
     <CudaCompile Include="neoscrypt\cuda_neoscrypt.cu">
       <MaxRegCount>160</MaxRegCount>
@@ -394,9 +377,6 @@
     <ClInclude Include="sph\sph_types.h" />
     <ClInclude Include="sph\sph_whirlpool.h" />
     <ClInclude Include="uint256.h" />
-    <ClInclude Include="lyra2\Lyra2.h" />
-    <ClInclude Include="lyra2\Sponge.h" />
-    <ClInclude Include="lyra2\Lyra2Z.h" />
     <ClInclude Include="quark\groestl_transf_quad.h" />
     <ClInclude Include="quark\groestl_functions_quad.h" />
     <ClInclude Include="quark\cuda_quark.h" />
@@ -518,15 +498,6 @@
     <CudaCompile Include="qubit\luffa.cu" />
     <CudaCompile Include="qubit\qubit.cu" />
     <CudaCompile Include="qubit\qubit_luffa512.cu" />
-    <CudaCompile Include="lyra2\lyra2RE.cu" />
-    <CudaCompile Include="lyra2\cuda_lyra2.cu" />
-    <CudaCompile Include="lyra2\lyra2REv2.cu" />
-    <CudaCompile Include="lyra2\cuda_lyra2v2.cu" />
-    <ClInclude Include="lyra2\cuda_lyra2_sm2.cuh" />
-    <ClInclude Include="lyra2\cuda_lyra2v2_sm3.cuh" />
-    <CudaCompile Include="lyra2\lyra2Z.cu" />
-    <CudaCompile Include="lyra2\cuda_lyra2Z.cu" />
-    <ClInclude Include="lyra2\cuda_lyra2Z_sm5.cuh" />
     <CudaCompile Include="polytimos.cu" />
     <CudaCompile Include="sia\sia.cu" />
     <CudaCompile Include="skein.cu">

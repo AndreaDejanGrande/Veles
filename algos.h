@@ -16,7 +16,6 @@ enum sha_algos {
 	ALGO_DEEP,
 	ALGO_DECRED,
 	ALGO_DMD_GR,
-	ALGO_EQUIHASH,
 	ALGO_FRESH,
 	ALGO_FUGUE256,		/* Fugue256 */
 	ALGO_GROESTL,
@@ -29,9 +28,6 @@ enum sha_algos {
 	ALGO_JHA,
 	ALGO_LBRY,
 	ALGO_LUFFA,
-	ALGO_LYRA2,
-	ALGO_LYRA2v2,
-	ALGO_LYRA2Z,
 	ALGO_MJOLLNIR,		/* Hefty hash */
 	ALGO_MYR_GR,
 	ALGO_NEOSCRYPT,
@@ -85,7 +81,6 @@ static const char *algo_names[] = {
 	"deep",
 	"decred",
 	"dmd-gr",
-	"equihash",
 	"fresh",
 	"fugue256",
 	"groestl",
@@ -98,9 +93,6 @@ static const char *algo_names[] = {
 	"jha",
 	"lbry",
 	"luffa",
-	"lyra2",
-	"lyra2v2",
-	"lyra2z",
 	"mjollnir",
 	"myr-gr",
 	"neoscrypt",
@@ -163,18 +155,12 @@ static inline int algo_to_int(char* arg)
 			i = ALGO_C11;
 		else if (!strcasecmp("diamond", arg))
 			i = ALGO_DMD_GR;
-		else if (!strcasecmp("equi", arg))
-			i = ALGO_EQUIHASH;
 		else if (!strcasecmp("doom", arg))
 			i = ALGO_LUFFA;
 		else if (!strcasecmp("hmq17", arg))
 			i = ALGO_HMQ1725;
 		else if (!strcasecmp("hshare", arg))
 			i = ALGO_HSR;
-		else if (!strcasecmp("lyra2re", arg))
-			i = ALGO_LYRA2;
-		else if (!strcasecmp("lyra2rev2", arg))
-			i = ALGO_LYRA2v2;
 		else if (!strcasecmp("phi1612", arg))
 			i = ALGO_PHI;
 		else if (!strcasecmp("bitcoin", arg))

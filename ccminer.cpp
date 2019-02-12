@@ -44,7 +44,6 @@
 #include "algos.h"
 #include "sia/sia-rpc.h"
 #include "crypto/xmr-rpc.h"
-#include "equi/equihash.h"
 
 #include <cuda_runtime.h>
 
@@ -247,7 +246,6 @@ Options:\n\
 			c11/flax    X11 variant\n\
 			decred      Decred Blake256\n\
 			deep        Deepcoin\n\
-			equihash    Zcash Equihash\n\
 			dmd-gr      Diamond-Groestl\n\
 			fresh       Freshcoin (shavite 80)\n\
 			fugue256    Fuguecoin\n\
@@ -261,9 +259,6 @@ Options:\n\
 			keccakc     Keccak-256 (CreativeCoin)\n\
 			lbry        LBRY Credits (Sha/Ripemd)\n\
 			luffa       Joincoin\n\
-			lyra2       CryptoCoin\n\
-			lyra2v2     VertCoin\n\
-			lyra2z      ZeroCoin (3rd impl)\n\
 			myr-gr      Myriad-Groestl\n\
 			neoscrypt   FeatherCoin, Phoenix, UFO...\n\
 			nist5       NIST5 (TalkCoin)\n\
@@ -572,10 +567,7 @@ void get_currentalgo(char* buf, int sz)
 
 void format_hashrate(double hashrate, char *output)
 {
-	if (opt_algo == ALGO_EQUIHASH)
-		format_hashrate_unit(hashrate, output, "Sol/s");
-	else
-		format_hashrate_unit(hashrate, output, "H/s");
+	format_hashrate_unit(hashrate, output, "H/s");
 }
 
 /**
@@ -661,10 +653,6 @@ static void calc_network_diff(struct work *work)
 	if (opt_algo == ALGO_LBRY) nbits = swab32(work->data[26]);
 	if (opt_algo == ALGO_DECRED) nbits = work->data[29];
 	if (opt_algo == ALGO_SIA) nbits = work->data[11]; // unsure if correct
-	if (opt_algo == ALGO_EQUIHASH) {
-		net_diff = equi_network_diff(work);
-		return;
-	}
 
 	uint32_t bits = (nbits & 0xffffff);
 	int16_t shift = (swab32(nbits) & 0xff); // 0x1c = 28
@@ -884,17 +872,6 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 				hashlog_remember_submit(&submit_work, submit_work.nonces[idnonce]);
 			stratum.job.shares_count++;
 		}
-		return true;
-	}
-
-	if (pool->type & POOL_STRATUM && stratum.is_equihash) {
-		struct work submit_work;
-		memcpy(&submit_work, work, sizeof(struct work));
-		//if (!hashlog_already_submittted(submit_work.job_id, submit_work.nonces[idnonce])) {
-			if (equi_stratum_submit(pool, &submit_work))
-				hashlog_remember_submit(&submit_work, submit_work.nonces[idnonce]);
-			stratum.job.shares_count++;
-		//}
 		return true;
 	}
 
@@ -1558,7 +1535,6 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 			sha256d(merkle_root, merkle_root, 64);
 			break;
 		case ALGO_DECRED:
-		case ALGO_EQUIHASH:
 		case ALGO_SIA:
 			// getwork over stratum, no merkle to generate
 			break;
@@ -1622,13 +1598,6 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		memcpy(&work->data[44], &sctx->job.coinbase[sctx->job.coinbase_size-4], 4);
 		sctx->job.height = work->data[32];
 		//applog_hex(work->data, 180);
-	} else if (opt_algo == ALGO_EQUIHASH) {
-		memcpy(&work->data[9], sctx->job.coinbase, 32+32); // merkle [9..16] + reserved
-		work->data[25] = le32dec(sctx->job.ntime);
-		work->data[26] = le32dec(sctx->job.nbits);
-		memcpy(&work->data[27], sctx->xnonce1, sctx->xnonce1_size & 0x1F); // pool extranonce
-		work->data[35] = 0x80;
-		//applog_hex(work->data, 140);
 	} else if (opt_algo == ALGO_LBRY) {
 		for (i = 0; i < 8; i++)
 			work->data[9 + i] = be32dec((uint32_t *)merkle_root + i);
@@ -1681,7 +1650,7 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 
 	pthread_mutex_unlock(&stratum_work_lock);
 
-	if (opt_debug && opt_algo != ALGO_DECRED && opt_algo != ALGO_EQUIHASH && opt_algo != ALGO_SIA) {
+	if (opt_debug && opt_algo != ALGO_DECRED && opt_algo != ALGO_SIA) {
 		uint32_t utm = work->data[17];
 		if (opt_algo != ALGO_ZR5) utm = swab32(utm);
 		char *tm = atime2str(utm - sctx->srvtime_diff);
@@ -1710,19 +1679,11 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		case ALGO_GROESTL:
 		case ALGO_KECCAKC:
 		case ALGO_LBRY:
-		case ALGO_LYRA2v2:
-		case ALGO_LYRA2Z:
 		case ALGO_TIMETRAVEL:
 		case ALGO_BITCORE:
 			work_set_target(work, sctx->job.diff / (256.0 * opt_difficulty));
 			break;
 		case ALGO_KECCAK:
-		case ALGO_LYRA2:
-			work_set_target(work, sctx->job.diff / (128.0 * opt_difficulty));
-			break;
-		case ALGO_EQUIHASH:
-			equi_work_set_target(work, sctx->job.diff / opt_difficulty);
-			break;
 		default:
 			work_set_target(work, sctx->job.diff / opt_difficulty);
 	}
@@ -1897,9 +1858,6 @@ static void *miner_thread(void *userdata)
 		} else if (opt_algo == ALGO_CRYPTOLIGHT || opt_algo == ALGO_CRYPTONIGHT) {
 			nonceptr = (uint32_t*) (((char*)work.data) + 39);
 			wcmplen = 39;
-		} else if (opt_algo == ALGO_EQUIHASH) {
-			nonceptr = &work.data[EQNONCE_OFFSET]; // 27 is pool extranonce (256bits nonce space)
-			wcmplen = 4+32+32;
 		}
 
 		if (have_stratum) {
@@ -2031,11 +1989,6 @@ static void *miner_thread(void *userdata)
 			// and make an unique work (extradata)
 			nonceptr[1] += 1;
 			nonceptr[2] |= thr_id;
-
-		} else if (opt_algo == ALGO_EQUIHASH) {
-			nonceptr[1]++;
-			nonceptr[1] |= thr_id << 24;
-			//applog_hex(&work.data[27], 32);
 		} else if (opt_algo == ALGO_WILDKECCAK) {
 			//nonceptr[1] += 1;
 		} else if (opt_algo == ALGO_SIA) {
@@ -2244,7 +2197,6 @@ static void *miner_thread(void *userdata)
 			case ALGO_JACKPOT:
 			case ALGO_JHA:
 			case ALGO_HSR:
-			case ALGO_LYRA2v2:
 			case ALGO_PHI:
 			case ALGO_POLYTIMOS:
 			case ALGO_S3:
@@ -2262,8 +2214,6 @@ static void *miner_thread(void *userdata)
 			case ALGO_X15:
 				minmax = 0x300000;
 				break;
-			case ALGO_LYRA2:
-			case ALGO_LYRA2Z:
 			case ALGO_NEOSCRYPT:
 			case ALGO_SIB:
 			case ALGO_VCRYPT:
@@ -2356,9 +2306,6 @@ static void *miner_thread(void *userdata)
 		case ALGO_DEEP:
 			rc = scanhash_deep(thr_id, &work, max_nonce, &hashes_done);
 			break;
-		case ALGO_EQUIHASH:
-			rc = scanhash_equihash(thr_id, &work, max_nonce, &hashes_done);
-			break;
 		case ALGO_FRESH:
 			rc = scanhash_fresh(thr_id, &work, max_nonce, &hashes_done);
 			break;
@@ -2411,15 +2358,6 @@ static void *miner_thread(void *userdata)
 			break;
 		case ALGO_QUBIT:
 			rc = scanhash_qubit(thr_id, &work, max_nonce, &hashes_done);
-			break;
-		case ALGO_LYRA2:
-			rc = scanhash_lyra2(thr_id, &work, max_nonce, &hashes_done);
-			break;
-		case ALGO_LYRA2v2:
-			rc = scanhash_lyra2v2(thr_id, &work, max_nonce, &hashes_done);
-			break;
-		case ALGO_LYRA2Z:
-			rc = scanhash_lyra2Z(thr_id, &work, max_nonce, &hashes_done);
 			break;
 		case ALGO_NEOSCRYPT:
 			rc = scanhash_neoscrypt(thr_id, &work, max_nonce, &hashes_done);
@@ -2600,7 +2538,7 @@ static void *miner_thread(void *userdata)
 		}
 
 		// only required to debug purpose
-		if (opt_debug && check_dups && opt_algo != ALGO_DECRED && opt_algo != ALGO_EQUIHASH && opt_algo != ALGO_SIA)
+		if (opt_debug && check_dups && opt_algo != ALGO_DECRED && opt_algo != ALGO_SIA)
 			hashlog_remember_scan_range(&work);
 
 		/* output */
@@ -3970,10 +3908,6 @@ int main(int argc, char *argv[])
 	if (opt_algo == ALGO_DECRED || opt_algo == ALGO_SIA) {
 		allow_gbt = false;
 		allow_mininginfo = false;
-	}
-
-	if (opt_algo == ALGO_EQUIHASH) {
-		opt_extranonce = false; // disable subscribe
 	}
 
 	if (opt_algo == ALGO_CRYPTONIGHT || opt_algo == ALGO_CRYPTOLIGHT) {

@@ -282,7 +282,6 @@ extern int scanhash_cryptolight(int thr_id, struct work* work, uint32_t max_nonc
 extern int scanhash_cryptonight(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_decred(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_deep(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
-extern int scanhash_equihash(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_keccak256(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_fresh(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_fugue256(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
@@ -294,9 +293,6 @@ extern int scanhash_jha(int thr_id, struct work* work, uint32_t max_nonce, unsig
 extern int scanhash_jackpot(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done); // quark method
 extern int scanhash_lbry(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_luffa(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
-extern int scanhash_lyra2(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
-extern int scanhash_lyra2v2(int thr_id,struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
-extern int scanhash_lyra2Z(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_myriad(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_neoscrypt(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done);
 extern int scanhash_nist5(int thr_id, struct work *work, uint32_t max_nonce, unsigned long *hashes_done);
@@ -346,7 +342,6 @@ extern void free_cryptolight(int thr_id);
 extern void free_cryptonight(int thr_id);
 extern void free_decred(int thr_id);
 extern void free_deep(int thr_id);
-extern void free_equihash(int thr_id);
 extern void free_keccak256(int thr_id);
 extern void free_fresh(int thr_id);
 extern void free_fugue256(int thr_id);
@@ -358,9 +353,6 @@ extern void free_jackpot(int thr_id);
 extern void free_jha(int thr_id);
 extern void free_lbry(int thr_id);
 extern void free_luffa(int thr_id);
-extern void free_lyra2(int thr_id);
-extern void free_lyra2v2(int thr_id);
-extern void free_lyra2Z(int thr_id);
 extern void free_myriad(int thr_id);
 extern void free_neoscrypt(int thr_id);
 extern void free_nist5(int thr_id);
@@ -695,7 +687,6 @@ struct stratum_ctx {
 	time_t tm_connected;
 
 	int rpc2;
-	int is_equihash;
 	int srvtime_diff;
 };
 
@@ -824,15 +815,6 @@ void stratum_free_job(struct stratum_ctx *sctx);
 
 bool rpc2_stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *pass);
 
-bool equi_stratum_notify(struct stratum_ctx *sctx, json_t *params);
-bool equi_stratum_set_target(struct stratum_ctx *sctx, json_t *params);
-bool equi_stratum_submit(struct pool_infos *pool, struct work *work);
-bool equi_stratum_show_message(struct stratum_ctx *sctx, json_t *id, json_t *params);
-void equi_work_set_target(struct work* work, double diff);
-void equi_store_work_solution(struct work* work, uint32_t* hash, void* sol_data);
-int equi_verify_sol(void * const hdr, void * const sol);
-double equi_network_diff(struct work *work);
-
 void hashlog_remember_submit(struct work* work, uint32_t nonce);
 void hashlog_remember_scan_range(struct work* work);
 double hashlog_get_sharediff(char* jobid, int idnonce, double defvalue);
@@ -906,9 +888,6 @@ void jackpothash(void *state, const void *input);
 void groestlhash(void *state, const void *input);
 void jha_hash(void *output, const void *input);
 void lbry_hash(void *output, const void *input);
-void lyra2re_hash(void *state, const void *input);
-void lyra2v2_hash(void *state, const void *input);
-void lyra2Z_hash(void *state, const void *input);
 void myriadhash(void *state, const void *input);
 void neoscrypt(uchar *output, const uchar *input, uint32_t profile);
 void nist5hash(void *state, const void *input);

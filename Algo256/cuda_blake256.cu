@@ -3,7 +3,6 @@
  *
  * Tanguy Pruvot - Nov. 2014
  *
- * + merged blake+keccak kernel for lyra2v2
  */
 extern "C" {
 #include "sph/sph_blake.h"
